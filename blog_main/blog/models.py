@@ -6,36 +6,34 @@ class Category(models.Model):
     slug = models.SlugField()
 
     class Meta:
-        ordering = ('title')
+        ordering = ('title',)
         verbose_name_plural = 'Categories'
 
-        def _srt_(self):
-            return self.title
-        
-        def get_absolute_url(self):
-            return '/%s/' % self.slug
+    def __str__(self):
+        return self.title
+
 
 class Post(models.Model):
-
+    
     ACTIVE = 'active'
     DRAFT = 'draft'
 
-    CHOICES_STATUS ={
-       (ACTIVE,'Active')
-       (DRAFT,'Draft')
-    }
+    CHOICES_STATUS = [
+        (ACTIVE, 'Active'),
+        (DRAFT, 'Draft'),
+    ]
 
-category = models.ForeingKey(Category,related_name='posts', on_delete=models.CASCADE)
-title = models.CharField(max_length=225)
-slug = models.SlugField()
-intro = models.TextField()
-body = models.TextField()
-created_at = models.DateTimeField(auto_now_add=True)
-status = models.CharField(max_length=10, choices=CHOICES_STATUS, default=ACTIVE)
-image = models.ImageField(upload_to='unpload', blank=True, null=True)
+    category = models.ForeignKey(Category, related_name='posts', on_delete=models.CASCADE)
+    title = models.CharField(max_length=225)
+    intro = models.TextField()
+    body = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=10, choices=CHOICES_STATUS, default=ACTIVE)
+    image = models.ImageField(upload_to='upload', blank=True, null=True)
 
-def _str_(self):
-    return self.title
+    def __str__(self):
+        return self.title
+
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)
@@ -44,5 +42,6 @@ class Comment(models.Model):
     body = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def _str_(self):
+    def __str__(self):
         return self.name
+
